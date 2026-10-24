@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FocusFlow — Advanced Pomodoro Timer</title>
+  <meta name="description" content="FocusFlow is an advanced Pomodoro timer featuring Study, Break, and Recall phases with customisable cycles and a long break. Boost your focus and retention with science-backed timing techniques." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="bg-orbs" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <main class="app-container">
+
+    <!-- Header -->
+    <header class="app-header">
+      <h1 class="logo">
+        <span class="logo-icon">⏱</span>
+        FocusFlow
+      </h1>
+      <p class="logo-sub">Advanced Pomodoro Timer</p>
+    </header>
+
+    <!-- Settings Row -->
+    <section class="settings-section" aria-label="Timer settings">
+      <div class="settings-grid">
+
+        <div class="setting-card" data-field="study">
+          <label for="input-study" class="setting-label">
+            <span class="setting-phase-dot dot-study"></span>
+            Study
+          </label>
+          <div class="setting-input-wrap">
+            <input
+              id="input-study"
+              type="number"
+              class="setting-input"
+              min="1" max="120"
+              value="25"
+              aria-label="Study phase duration in minutes"
+              inputmode="numeric"
+            />
+            <span class="setting-unit">min</span>
+          </div>
+        </div>
+
+        <div class="setting-card" data-field="break">
+          <label for="input-break" class="setting-label">
+            <span class="setting-phase-dot dot-break"></span>
+            Break
+          </label>
+          <div class="setting-input-wrap">
+            <input
+              id="input-break"
+              type="number"
+              class="setting-input"
+              min="1" max="60"
+              value="5"
+              aria-label="Break phase duration in minutes"
+              inputmode="numeric"
+            />
+            <span class="setting-unit">min</span>
+          </div>
+        </div>
+
+        <div class="setting-card" data-field="recall">
+          <label for="input-recall" class="setting-label">
+            <span class="setting-phase-dot dot-recall"></span>
+            Recall
+          </label>
+          <div class="setting-input-wrap">
+            <input
+              id="input-recall"
+              type="number"
+              class="setting-input"
+              min="1" max="60"
+              value="10"
+              aria-label="Recall phase duration in minutes"
+              inputmode="numeric"
+            />
+            <span class="setting-unit">min</span>
+          </div>
+        </div>
+
+        <div class="setting-card" data-field="cycles">
+          <label for="input-cycles" class="setting-label">
+            <span class="setting-phase-dot dot-cycles"></span>
+            Cycles
+          </label>
+          <div class="setting-input-wrap">
+            <input
+              id="input-cycles"
+              type="number"
+              class="setting-input"
+              min="1" max="10"
+              value="4"
+              aria-label="Number of cycles before long break"
+              inputmode="numeric"
+            />
+            <span class="setting-unit">×</span>
+          </div>
+        </div>
+
+        <div class="setting-card" data-field="longbreak">
+          <label for="input-longbreak" class="setting-label">
+            <span class="setting-phase-dot dot-longbreak"></span>
+            Long Break
+          </label>
+          <div class="setting-input-wrap">
+            <input
+              id="input-longbreak"
+              type="number"
+              class="setting-input"
+              min="1" max="120"
+              value="30"
+              aria-label="Long break duration in minutes"
+              inputmode="numeric"
+            />
+            <span class="setting-unit">min</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Tooltip -->
+      <div class="tooltip-area" id="tooltip-area" role="status" aria-live="polite">
+        <p class="tooltip-text" id="tooltip-text">Click any setting above to learn more about it.</p>
+      </div>
+    </section>
+
+    <!-- Timer Section -->
+    <section class="timer-section" aria-label="Timer">
+
+      <!-- Phase badge -->
+      <div class="phase-badge" id="phase-badge" aria-live="polite">
+        <span class="phase-dot" id="phase-dot"></span>
+        <span id="phase-label">Study</span>
+      </div>
+
+      <!-- Ring -->
+      <div class="ring-wrapper">
+        <progress
+          id="timer-progress"
+          class="progress-ring"
+          value="100"
+          max="100"
+          aria-label="Time remaining"
+        ></progress>
+
+        <div class="ring-content" aria-hidden="true">
+          <div class="timer-display" id="timer-display">25:00</div>
+          <div class="timer-subtext" id="timer-subtext">Ready</div>
+        </div>
+
+        <!-- Outer glow ring -->
+        <div class="ring-glow" id="ring-glow"></div>
+      </div>
+
+      <!-- Controls -->
+      <div class="controls">
+        <button id="btn-start" class="btn btn-primary" aria-label="Start timer">
+          <span class="btn-icon">▶</span>
+          <span id="btn-start-label">Start</span>
+        </button>
+      </div>
+
+    </section>
+
+    <!-- Status Bar -->
+    <section class="status-section" aria-label="Session status">
+      <div class="status-card">
+        <div class="status-item">
+          <span class="status-value" id="cycles-display">0 / 4</span>
+          <span class="status-label">Cycles</span>
+        </div>
+        <div class="status-divider"></div>
+        <div class="status-item">
+          <span class="status-value" id="phase-count-display">1 / 3</span>
+          <span class="status-label">Phase</span>
+        </div>
+        <div class="status-divider"></div>
+        <div class="status-item" id="next-phase-item">
+          <span class="status-value" id="next-phase-display">Break</span>
+          <span class="status-label">Next</span>
+        </div>
+      </div>
+
+      <button id="btn-reset" class="btn btn-secondary" aria-label="Reset current phase">
+        <span class="btn-icon">↺</span>
+        Reset Phase
+      </button>
+    </section>
+
+    <!-- Description -->
+    <footer class="app-footer">
+      <p class="footer-text">
+        The Pomodoro Technique enhances focus by breaking work into timed intervals separated by short breaks, reducing mental fatigue and sustaining deep concentration.
+        The <strong>Recall</strong> phase leverages active retrieval — one of cognitive science's most powerful memory consolidation strategies — by prompting you to review what you just studied before moving on.
+        Completing multiple cycles before a <strong>Long Break</strong> allows your brain to fully consolidate learning while restoring sustained mental energy.
+      </p>
+    </footer>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
