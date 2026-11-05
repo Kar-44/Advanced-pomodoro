@@ -1,15 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FocusFlow — Advanced Pomodoro Timer</title>
-  <meta name="description" content="FocusFlow is an advanced Pomodoro timer featuring Study, Break, and Recall phases with customisable cycles and a long break. Boost your focus and retention with science-backed timing techniques." />
+  <meta name="description"
+    content="FocusFlow is an advanced Pomodoro timer featuring Study, Break, and Recall phases with customisable cycles and a long break. Boost your focus and retention with science-backed timing techniques." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
   <div class="bg-orbs" aria-hidden="true">
     <div class="orb orb-1"></div>
@@ -38,15 +43,8 @@
             Study
           </label>
           <div class="setting-input-wrap">
-            <input
-              id="input-study"
-              type="number"
-              class="setting-input"
-              min="1" max="120"
-              value="25"
-              aria-label="Study phase duration in minutes"
-              inputmode="numeric"
-            />
+            <input id="input-study" type="number" class="setting-input" min="1" max="120" value="25"
+              aria-label="Study phase duration in minutes" inputmode="numeric" />
             <span class="setting-unit">min</span>
           </div>
         </div>
@@ -57,15 +55,8 @@
             Break
           </label>
           <div class="setting-input-wrap">
-            <input
-              id="input-break"
-              type="number"
-              class="setting-input"
-              min="1" max="60"
-              value="5"
-              aria-label="Break phase duration in minutes"
-              inputmode="numeric"
-            />
+            <input id="input-break" type="number" class="setting-input" min="1" max="60" value="5"
+              aria-label="Break phase duration in minutes" inputmode="numeric" />
             <span class="setting-unit">min</span>
           </div>
         </div>
@@ -76,15 +67,8 @@
             Recall
           </label>
           <div class="setting-input-wrap">
-            <input
-              id="input-recall"
-              type="number"
-              class="setting-input"
-              min="1" max="60"
-              value="10"
-              aria-label="Recall phase duration in minutes"
-              inputmode="numeric"
-            />
+            <input id="input-recall" type="number" class="setting-input" min="0" max="60" value="10"
+              aria-label="Recall phase duration in minutes" inputmode="numeric" />
             <span class="setting-unit">min</span>
           </div>
         </div>
@@ -95,15 +79,8 @@
             Cycles
           </label>
           <div class="setting-input-wrap">
-            <input
-              id="input-cycles"
-              type="number"
-              class="setting-input"
-              min="1" max="10"
-              value="4"
-              aria-label="Number of cycles before long break"
-              inputmode="numeric"
-            />
+            <input id="input-cycles" type="number" class="setting-input" min="1" max="10" value="4"
+              aria-label="Number of cycles before long break" inputmode="numeric" />
             <span class="setting-unit">×</span>
           </div>
         </div>
@@ -114,15 +91,8 @@
             Long Break
           </label>
           <div class="setting-input-wrap">
-            <input
-              id="input-longbreak"
-              type="number"
-              class="setting-input"
-              min="1" max="120"
-              value="30"
-              aria-label="Long break duration in minutes"
-              inputmode="numeric"
-            />
+            <input id="input-longbreak" type="number" class="setting-input" min="1" max="120" value="30"
+              aria-label="Long break duration in minutes" inputmode="numeric" />
             <span class="setting-unit">min</span>
           </div>
         </div>
@@ -146,13 +116,8 @@
 
       <!-- Ring -->
       <div class="ring-wrapper">
-        <progress
-          id="timer-progress"
-          class="progress-ring"
-          value="100"
-          max="100"
-          aria-label="Time remaining"
-        ></progress>
+        <progress id="timer-progress" class="progress-ring" value="100" max="100"
+          aria-label="Time remaining"></progress>
 
         <div class="ring-content" aria-hidden="true">
           <div class="timer-display" id="timer-display">25:00</div>
@@ -192,18 +157,43 @@
         </div>
       </div>
 
-      <button id="btn-reset" class="btn btn-secondary" aria-label="Reset current phase">
-        <span class="btn-icon">↺</span>
-        Reset Phase
-      </button>
+      <div class="status-actions">
+        <button id="btn-zen" class="btn btn-icon-only" aria-label="Toggle zen mode (blur timer)" title="Zen mode">
+          <svg class="zen-icon zen-icon-eye" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+            <circle cx="12" cy="12" r="3" />
+          </svg>
+          <svg class="zen-icon zen-icon-eye-off" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
+            <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
+            <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24" />
+            <line x1="1" y1="1" x2="23" y2="23" />
+          </svg>
+        </button>
+
+        <button id="btn-reset" class="btn btn-secondary" aria-label="Reset current phase">
+          <span class="btn-icon">↺</span>
+          Reset Phase
+        </button>
+
+        <button id="btn-skip" class="btn btn-secondary" aria-label="Skip current phase">
+          <span class="btn-icon">⏭</span>
+          Skip Phase
+        </button>
+      </div>
     </section>
 
     <!-- Description -->
     <footer class="app-footer">
       <p class="footer-text">
-        The Pomodoro Technique enhances focus by breaking work into timed intervals separated by short breaks, reducing mental fatigue and sustaining deep concentration.
-        The <strong>Recall</strong> phase leverages active retrieval — one of cognitive science's most powerful memory consolidation strategies — by prompting you to review what you just studied before moving on.
-        Completing multiple cycles before a <strong>Long Break</strong> allows your brain to fully consolidate learning while restoring sustained mental energy.
+        The Pomodoro Technique enhances focus by breaking work into timed intervals separated by short breaks, reducing
+        mental fatigue and sustaining deep concentration.
+        The <strong>Recall</strong> phase leverages active retrieval — one of cognitive science's most powerful memory
+        consolidation strategies — by prompting you to review what you just studied before moving on.
+        Completing multiple cycles before a <strong>Long Break</strong> allows your brain to fully consolidate learning
+        while restoring sustained mental energy.
       </p>
     </footer>
 
@@ -211,4 +201,5 @@
 
   <script src="app.js"></script>
 </body>
+
 </html>

@@ -12,38 +12,42 @@
 
 :root {
   /* Palette */
-  --clr-bg:           #090b12;
-  --clr-surface:      rgba(255, 255, 255, 0.04);
-  --clr-surface-hover:rgba(255, 255, 255, 0.07);
-  --clr-border:       rgba(255, 255, 255, 0.08);
+  --clr-bg: #090b12;
+  --clr-surface: rgba(255, 255, 255, 0.04);
+  --clr-surface-hover: rgba(255, 255, 255, 0.07);
+  --clr-border: rgba(255, 255, 255, 0.08);
   --clr-border-focus: rgba(139, 92, 246, 0.6);
 
   /* Phase colours */
-  --clr-study:        #8b5cf6;   /* violet */
-  --clr-study-glow:   #8b5cf640;
-  --clr-break:        #22d3ee;   /* cyan */
-  --clr-break-glow:   #22d3ee40;
-  --clr-recall:       #f59e0b;   /* amber */
-  --clr-recall-glow:  #f59e0b40;
-  --clr-longbreak:    #10b981;   /* emerald */
-  --clr-longbreak-glow:#10b98140;
+  --clr-study: #8b5cf6;
+  /* violet */
+  --clr-study-glow: #8b5cf640;
+  --clr-break: #22d3ee;
+  /* cyan */
+  --clr-break-glow: #22d3ee40;
+  --clr-recall: #f59e0b;
+  /* amber */
+  --clr-recall-glow: #f59e0b40;
+  --clr-longbreak: #10b981;
+  /* emerald */
+  --clr-longbreak-glow: #10b98140;
 
-  --clr-active:       var(--clr-study);
-  --clr-active-glow:  var(--clr-study-glow);
+  --clr-active: var(--clr-study);
+  --clr-active-glow: var(--clr-study-glow);
 
   /* Text */
-  --clr-text-primary:   #f0f4ff;
+  --clr-text-primary: #f0f4ff;
   --clr-text-secondary: rgba(240, 244, 255, 0.55);
-  --clr-text-muted:     rgba(240, 244, 255, 0.30);
+  --clr-text-muted: rgba(240, 244, 255, 0.30);
 
   /* Ring */
-  --ring-size:      260px;
+  --ring-size: 260px;
   --ring-thickness: 18px;
-  --ring-track:     rgba(255, 255, 255, 0.08);
+  --ring-track: rgba(255, 255, 255, 0.08);
 
   /* Typography */
-  --font-body:     'Inter', system-ui, sans-serif;
-  --font-display:  'Space Grotesk', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
 
   /* Easing */
   --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
@@ -51,7 +55,13 @@
 }
 
 /* ---------- Reset & Base ---------- */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
 html {
   font-size: 16px;
@@ -87,32 +97,46 @@ body {
 }
 
 .orb-1 {
-  width: 500px; height: 500px;
+  width: 500px;
+  height: 500px;
   background: radial-gradient(circle, #8b5cf6, transparent 70%);
-  top: -150px; left: -100px;
+  top: -150px;
+  left: -100px;
   animation-duration: 22s;
 }
 
 .orb-2 {
-  width: 400px; height: 400px;
+  width: 400px;
+  height: 400px;
   background: radial-gradient(circle, #22d3ee, transparent 70%);
-  bottom: -100px; right: -80px;
+  bottom: -100px;
+  right: -80px;
   animation-duration: 18s;
   animation-delay: -8s;
 }
 
 .orb-3 {
-  width: 350px; height: 350px;
+  width: 350px;
+  height: 350px;
   background: radial-gradient(circle, #f59e0b, transparent 70%);
-  top: 40%; left: 60%;
+  top: 40%;
+  left: 60%;
   animation-duration: 26s;
   animation-delay: -14s;
 }
 
 @keyframes orb-drift {
-  0%   { transform: translate(0, 0) scale(1); }
-  50%  { transform: translate(30px, -40px) scale(1.1); }
-  100% { transform: translate(-20px, 20px) scale(0.95); }
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate(30px, -40px) scale(1.1);
+  }
+
+  100% {
+    transform: translate(-20px, 20px) scale(0.95);
+  }
 }
 
 /* ---------- Layout ---------- */
@@ -147,7 +171,9 @@ body {
   gap: 0.4rem;
 }
 
-.logo-icon { font-size: 1.5rem; }
+.logo-icon {
+  font-size: 1.5rem;
+}
 
 .logo-sub {
   font-size: 0.8rem;
@@ -190,9 +216,9 @@ body {
   gap: 0.5rem;
   cursor: pointer;
   transition: background 0.2s var(--ease-smooth),
-              border-color 0.2s var(--ease-smooth),
-              transform 0.15s var(--ease-spring),
-              box-shadow 0.2s var(--ease-smooth);
+    border-color 0.2s var(--ease-smooth),
+    transform 0.15s var(--ease-spring),
+    box-shadow 0.2s var(--ease-smooth);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
@@ -221,15 +247,31 @@ body {
 }
 
 .setting-phase-dot {
-  width: 6px; height: 6px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   flex-shrink: 0;
 }
-.dot-study    { background: var(--clr-study); }
-.dot-break    { background: var(--clr-break); }
-.dot-recall   { background: var(--clr-recall); }
-.dot-cycles   { background: #ec4899; }
-.dot-longbreak{ background: var(--clr-longbreak); }
+
+.dot-study {
+  background: var(--clr-study);
+}
+
+.dot-break {
+  background: var(--clr-break);
+}
+
+.dot-recall {
+  background: var(--clr-recall);
+}
+
+.dot-cycles {
+  background: #ec4899;
+}
+
+.dot-longbreak {
+  background: var(--clr-longbreak);
+}
 
 .setting-input-wrap {
   display: flex;
@@ -249,8 +291,11 @@ body {
   text-align: center;
   -moz-appearance: textfield;
 }
+
 .setting-input::-webkit-inner-spin-button,
-.setting-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+.setting-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
 
 .setting-unit {
   font-size: 0.7rem;
@@ -311,7 +356,8 @@ body {
 }
 
 .phase-dot {
-  width: 8px; height: 8px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: var(--clr-active);
   animation: pulse-dot 2s ease-in-out infinite;
@@ -319,8 +365,17 @@ body {
 }
 
 @keyframes pulse-dot {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50%       { transform: scale(1.4); opacity: 0.7; }
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.4);
+    opacity: 0.7;
+  }
 }
 
 /* ---------- Progress Ring ---------- */
@@ -344,8 +399,17 @@ body {
 }
 
 @keyframes glow-pulse {
-  0%, 100% { opacity: 0.6; transform: scale(1); }
-  50%       { opacity: 1;   transform: scale(1.04); }
+
+  0%,
+  100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
 }
 
 progress.progress-ring {
@@ -362,11 +426,9 @@ progress.progress-ring {
   border-radius: 50%;
 
   /* Smooth animated fill */
-  background: conic-gradient(
-    from -90deg,
-    var(--fill-color) calc(var(--value) * 1%),
-    var(--track-color) 0
-  );
+  background: conic-gradient(from -90deg,
+      var(--fill-color) calc(var(--value) * 1%),
+      var(--track-color) 0);
 
   background-clip: border-area;
   border: var(--thickness) solid transparent;
@@ -387,17 +449,26 @@ progress.progress-ring {
   progress.progress-ring {
     background-clip: unset;
     border: 0;
-    mask-image: radial-gradient(
-      transparent calc(50% - var(--thickness)),
-      black calc(50% - var(--thickness) + 0.5px)
-    );
+    mask-image: radial-gradient(transparent calc(50% - var(--thickness)),
+        black calc(50% - var(--thickness) + 0.5px));
   }
 }
 
 /* Hide native progress bar styling */
-progress.progress-ring::-webkit-progress-bar { display: none; background: none; }
-progress.progress-ring::-webkit-progress-value { display: none; background: none; }
-progress.progress-ring::-moz-progress-bar { display: none; background: none; }
+progress.progress-ring::-webkit-progress-bar {
+  display: none;
+  background: none;
+}
+
+progress.progress-ring::-webkit-progress-value {
+  display: none;
+  background: none;
+}
+
+progress.progress-ring::-moz-progress-bar {
+  display: none;
+  background: none;
+}
 
 .ring-content {
   position: absolute;
@@ -450,29 +521,31 @@ progress.progress-ring::-moz-progress-bar { display: none; background: none; }
   cursor: pointer;
   letter-spacing: 0.02em;
   transition: transform 0.15s var(--ease-spring),
-              box-shadow 0.2s var(--ease-smooth),
-              background 0.2s var(--ease-smooth),
-              opacity 0.2s var(--ease-smooth);
+    box-shadow 0.2s var(--ease-smooth),
+    background 0.2s var(--ease-smooth),
+    opacity 0.2s var(--ease-smooth);
 }
 
-.btn:active { transform: scale(0.96); }
+.btn:active {
+  transform: scale(0.96);
+}
 
 .btn-primary {
   background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
   color: #fff;
-  box-shadow: 0 4px 24px rgba(139, 92, 246, 0.4), 0 1px 0 rgba(255,255,255,0.15) inset;
+  box-shadow: 0 4px 24px rgba(139, 92, 246, 0.4), 0 1px 0 rgba(255, 255, 255, 0.15) inset;
   min-width: 140px;
   justify-content: center;
 }
 
 .btn-primary:hover {
-  box-shadow: 0 6px 32px rgba(139, 92, 246, 0.55), 0 1px 0 rgba(255,255,255,0.15) inset;
+  box-shadow: 0 6px 32px rgba(139, 92, 246, 0.55), 0 1px 0 rgba(255, 255, 255, 0.15) inset;
   transform: translateY(-2px);
 }
 
 .btn-primary.paused {
   background: linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%);
-  box-shadow: 0 4px 24px rgba(34, 211, 238, 0.4), 0 1px 0 rgba(255,255,255,0.15) inset;
+  box-shadow: 0 4px 24px rgba(34, 211, 238, 0.4), 0 1px 0 rgba(255, 255, 255, 0.15) inset;
 }
 
 .btn-icon {
@@ -493,7 +566,7 @@ progress.progress-ring::-moz-progress-bar { display: none; background: none; }
 .btn-secondary:hover {
   background: var(--clr-surface-hover);
   color: var(--clr-text-primary);
-  border-color: rgba(255,255,255,0.15);
+  border-color: rgba(255, 255, 255, 0.15);
   transform: translateY(-1px);
 }
 
@@ -571,15 +644,37 @@ progress.progress-ring::-moz-progress-bar { display: none; background: none; }
 }
 
 /* ---------- Phase colour transitions ---------- */
-body[data-phase="study"]     { --clr-active: var(--clr-study);     --clr-active-glow: var(--clr-study-glow);     }
-body[data-phase="break"]     { --clr-active: var(--clr-break);     --clr-active-glow: var(--clr-break-glow);     }
-body[data-phase="recall"]    { --clr-active: var(--clr-recall);    --clr-active-glow: var(--clr-recall-glow);    }
-body[data-phase="longbreak"] { --clr-active: var(--clr-longbreak); --clr-active-glow: var(--clr-longbreak-glow); }
+body[data-phase="study"] {
+  --clr-active: var(--clr-study);
+  --clr-active-glow: var(--clr-study-glow);
+}
+
+body[data-phase="break"] {
+  --clr-active: var(--clr-break);
+  --clr-active-glow: var(--clr-break-glow);
+}
+
+body[data-phase="recall"] {
+  --clr-active: var(--clr-recall);
+  --clr-active-glow: var(--clr-recall-glow);
+}
+
+body[data-phase="longbreak"] {
+  --clr-active: var(--clr-longbreak);
+  --clr-active-glow: var(--clr-longbreak-glow);
+}
 
 /* ---------- Phase transition animation ---------- */
 @keyframes phase-enter {
-  from { opacity: 0; transform: scale(0.92); }
-  to   { opacity: 1; transform: scale(1);    }
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .ring-wrapper.phase-change .ring-content {
@@ -588,13 +683,105 @@ body[data-phase="longbreak"] { --clr-active: var(--clr-longbreak); --clr-active-
 
 /* ---------- Completion flash ---------- */
 @keyframes complete-flash {
-  0%   { opacity: 1; }
-  30%  { opacity: 0.2; }
-  60%  { opacity: 1; }
-  80%  { opacity: 0.5; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 1;
+  }
+
+  30% {
+    opacity: 0.2;
+  }
+
+  60% {
+    opacity: 1;
+  }
+
+  80% {
+    opacity: 0.5;
+  }
+
+  100% {
+    opacity: 1;
+  }
 }
 
 .ring-wrapper.phase-complete {
   animation: complete-flash 0.5s var(--ease-smooth);
+}
+
+/* ---------- Status Actions Row ---------- */
+.status-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+/* ---------- Icon-Only Button (Zen Toggle) ---------- */
+.btn-icon-only {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border-radius: 50%;
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  color: var(--clr-text-secondary);
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: transform 0.15s var(--ease-spring),
+    background 0.2s var(--ease-smooth),
+    color 0.2s var(--ease-smooth),
+    border-color 0.2s var(--ease-smooth);
+}
+
+.btn-icon-only:hover {
+  background: var(--clr-surface-hover);
+  color: var(--clr-text-primary);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
+}
+
+.btn-icon-only:active {
+  transform: scale(0.94);
+}
+
+.btn-icon-only.active {
+  background: rgba(139, 92, 246, 0.15);
+  border-color: rgba(139, 92, 246, 0.4);
+  color: var(--clr-study);
+}
+
+/* ---------- Zen Mode (Blur) ---------- */
+.timer-section.zen-blur .ring-wrapper,
+.timer-section.zen-blur .phase-badge {
+  filter: blur(28px) saturate(0.5);
+  transition: filter 0.4s var(--ease-smooth);
+}
+
+.timer-section.zen-blur .ring-wrapper:hover,
+.timer-section.zen-blur .phase-badge:hover {
+  filter: blur(0) saturate(1);
+}
+
+.timer-section.zen-blur .ring-wrapper *,
+.timer-section.zen-blur .phase-badge * {
+  animation-play-state: paused !important;
+}
+
+.timer-section.zen-blur .ring-wrapper:hover *,
+.timer-section.zen-blur .phase-badge:hover * {
+  animation-play-state: running !important;
+}
+
+/* Smooth unblur transition */
+.timer-section .ring-wrapper,
+.timer-section .phase-badge {
+  transition: filter 0.4s var(--ease-smooth);
+}
+
+/* Also pause background orbs during zen mode */
+body.zen-active .bg-orbs .orb {
+  animation-play-state: paused;
 }

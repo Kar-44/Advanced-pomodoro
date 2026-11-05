@@ -24,8 +24,8 @@ const FIELD_META = {
   },
   recall: {
     title: 'Recall Phase',
-    desc: 'Actively retrieve what you just studied — write key ideas from memory. This dramatically boosts retention.',
-    rec: 'Recommended: 5–15 min',
+    desc: 'Actively retrieve what you just studied — write key ideas from memory. This dramatically boosts retention. Set to 0 to skip this phase entirely.',
+    rec: 'Recommended: 5–15 min (0 to skip)',
     color: 'var(--clr-recall)',
   },
   cycles: {
@@ -43,15 +43,15 @@ const FIELD_META = {
 };
 
 const PHASE_LABELS = {
-  study:     'Study',
-  break:     'Short Break',
-  recall:    'Recall',
+  study: 'Study',
+  break: 'Short Break',
+  recall: 'Recall',
   longbreak: 'Long Break',
 };
 
 const PHASE_COUNTS = {
-  study:  '1 / 3',
-  break:  '2 / 3',
+  study: '1 / 3',
+  break: '2 / 3',
   recall: '3 / 3',
   longbreak: '—',
 };
@@ -62,26 +62,31 @@ const $ = (id) => document.getElementById(id);
 
 const dom = {
   inputs: {
-    study:     $('input-study'),
-    break:     $('input-break'),
-    recall:    $('input-recall'),
-    cycles:    $('input-cycles'),
+    study: $('input-study'),
+    break: $('input-break'),
+    recall: $('input-recall'),
+    cycles: $('input-cycles'),
     longbreak: $('input-longbreak'),
   },
   cards: document.querySelectorAll('.setting-card'),
   tooltipText: $('tooltip-text'),
   tooltipArea: $('tooltip-area'),
-  progress:    $('timer-progress'),
+  progress: $('timer-progress'),
   timerDisplay: $('timer-display'),
   timerSubtext: $('timer-subtext'),
-  phaseBadge:  $('phase-badge'),
-  phaseLabel:  $('phase-label'),
-  phaseDot:    $('phase-dot'),
+  phaseBadge: $('phase-badge'),
+  phaseLabel: $('phase-label'),
+  phaseDot: $('phase-dot'),
   ringWrapper: document.querySelector('.ring-wrapper'),
-  ringGlow:    $('ring-glow'),
-  btnStart:    $('btn-start'),
+  ringGlow: $('ring-glow'),
+  btnStart: $('btn-start'),
   btnStartLabel: document.querySelector('#btn-start #btn-start-label') || $('btn-start').querySelector('span:last-child'),
-  btnReset:    $('btn-reset'),
+  btnReset: $('btn-reset'),
+  btnSkip: $('btn-skip'),
+  btnZen: $('btn-zen'),
+  zenIconEye: document.querySelector('.zen-icon-eye'),
+  zenIconEyeOff: document.querySelector('.zen-icon-eye-off'),
+  timerSection: document.querySelector('.timer-section'),
   cyclesDisplay: $('cycles-display'),
   phaseCountDisplay: $('phase-count-display'),
   nextPhaseDisplay: $('next-phase-display'),
@@ -90,25 +95,29 @@ const dom = {
 // ─── State ────────────────────────────────────────────────────────────────────
 
 let state = {
-  running:       false,
-  phase:         'study',       // current phase key
-  cycleIndex:    0,             // position within PHASES array (0,1,2)
+  running: false,
+  phase: 'study',       // current phase key
+  cycleIndex: 0,             // position within PHASES array (0,1,2)
   completedCycles: 0,           // full Study→Break→Recall cycles done
-  secondsLeft:   0,
-  totalSeconds:  0,
-  intervalId:    null,
-  inLongBreak:   false,
+  secondsLeft: 0,
+  totalSeconds: 0,
+  intervalId: null,
+  inLongBreak: false,
 };
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function getSettings() {
+  const parse = (el, fallback, min = 1) => {
+    const v = parseInt(el.value, 10);
+    return Number.isNaN(v) ? fallback : Math.max(min, v);
+  };
   return {
-    study:     Math.max(1, parseInt(dom.inputs.study.value, 10)     || 25),
-    break:     Math.max(1, parseInt(dom.inputs.break.value, 10)     || 5),
-    recall:    Math.max(1, parseInt(dom.inputs.recall.value, 10)    || 10),
-    cycles:    Math.max(1, parseInt(dom.inputs.cycles.value, 10)    || 4),
-    longbreak: Math.max(1, parseInt(dom.inputs.longbreak.value, 10) || 30),
+    study: parse(dom.inputs.study, 25),
+    break: parse(dom.inputs.break, 5),
+    recall: parse(dom.inputs.recall, 10, 0),
+    cycles: parse(dom.inputs.cycles, 4),
+    longbreak: parse(dom.inputs.longbreak, 30),
   };
 }
 
@@ -123,10 +132,17 @@ function phaseDurationSecs(phase) {
   return (s[phase] || 25) * 60;
 }
 
+/** Returns the active phases for the current cycle, skipping recall when set to 0. */
+function getActivePhases() {
+  const s = getSettings();
+  return s.recall > 0 ? ['study', 'break', 'recall'] : ['study', 'break'];
+}
+
 function nextPhaseKey(current) {
   if (current === 'longbreak') return 'study';
-  const idx = PHASES.indexOf(current);
-  return PHASES[(idx + 1) % PHASES.length] || 'study';
+  const phases = getActivePhases();
+  const idx = phases.indexOf(current);
+  return phases[(idx + 1) % phases.length] || 'study';
 }
 
 // ─── UI Updates ───────────────────────────────────────────────────────────────
@@ -148,7 +164,12 @@ function setPhaseColors(phase) {
 function updatePhaseUI(phase) {
   const label = PHASE_LABELS[phase] || phase;
   dom.phaseLabel.textContent = label;
-  dom.phaseCountDisplay.textContent = PHASE_COUNTS[phase] || '—';
+
+  // Compute phase count dynamically based on active phases
+  const phases = getActivePhases();
+  const idx = phases.indexOf(phase);
+  dom.phaseCountDisplay.textContent = phase === 'longbreak' ? '—' : `${idx + 1} / ${phases.length}`;
+
   setPhaseColors(phase);
 
   // Next phase hint
@@ -171,20 +192,20 @@ function updateTimerDisplay() {
 
 function setRunningUI(running) {
   const btnLabelEl = dom.btnStart.querySelector('span:last-child');
-  const btnIconEl  = dom.btnStart.querySelector('.btn-icon');
+  const btnIconEl = dom.btnStart.querySelector('.btn-icon');
 
   if (running) {
     dom.btnStart.classList.add('paused');
     if (btnLabelEl) btnLabelEl.textContent = 'Pause';
-    if (btnIconEl)  btnIconEl.textContent  = '⏸';
+    if (btnIconEl) btnIconEl.textContent = '⏸';
     dom.timerSubtext.textContent = 'Focusing…';
-    if (state.phase === 'break')     dom.timerSubtext.textContent = 'Resting…';
-    if (state.phase === 'recall')    dom.timerSubtext.textContent = 'Recalling…';
+    if (state.phase === 'break') dom.timerSubtext.textContent = 'Resting…';
+    if (state.phase === 'recall') dom.timerSubtext.textContent = 'Recalling…';
     if (state.phase === 'longbreak') dom.timerSubtext.textContent = 'Long Rest…';
   } else {
     dom.btnStart.classList.remove('paused');
     if (btnLabelEl) btnLabelEl.textContent = 'Start';
-    if (btnIconEl)  btnIconEl.textContent  = '▶';
+    if (btnIconEl) btnIconEl.textContent = '▶';
     dom.timerSubtext.textContent = state.secondsLeft < state.totalSeconds ? 'Paused' : 'Ready';
   }
 }
@@ -203,6 +224,101 @@ function triggerCompleteFlash() {
   setTimeout(() => dom.ringWrapper.classList.remove('phase-complete'), 550);
 }
 
+// ─── Chime (Web Audio API — no audio file required) ──────────────────────────
+
+let audioCtx = null;
+
+/**
+ * Lazily initialise AudioContext on first user interaction to satisfy
+ * browser autoplay policy (context must be created / resumed in a
+ * user-gesture event stack on Chrome/Safari).
+ */
+function ensureAudioCtx() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+  return audioCtx;
+}
+
+/**
+ * Play a soft three-note ascending chime.
+ * Each note is a decaying sine wave with a gentle harmonics overlay.
+ * @param {'study'|'break'|'recall'|'longbreak'} phase - phase that just ended
+ */
+function playChime(phase) {
+  try {
+    const ctx = ensureAudioCtx();
+    const now = ctx.currentTime;
+
+    // Choose note set by phase:
+    //   study  → C5-E5-G5  (bright, motivating)
+    //   break  → G4-C5-E5  (relaxed, lower)
+    //   recall → E5-G5-B5  (slightly higher, inquisitive)
+    //   longbreak → C5-G5-C6 (open, spacious)
+    const noteSets = {
+      study: [523.25, 659.25, 783.99],
+      break: [392.00, 523.25, 659.25],
+      recall: [659.25, 783.99, 987.77],
+      longbreak: [523.25, 783.99, 1046.50],
+    };
+    const freqs = noteSets[phase] || noteSets.study;
+
+    freqs.forEach((freq, i) => {
+      const start = now + i * 0.18;   // stagger each note by 180 ms
+      const decay = 1.8;              // seconds to fade out
+
+      // Primary sine oscillator
+      const osc = ctx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, start);
+      // Slight pitch drop for a more natural bell-like feel
+      osc.frequency.exponentialRampToValueAtTime(freq * 0.998, start + decay);
+
+      // Second overtone oscillator (2× frequency, lower volume)
+      const osc2 = ctx.createOscillator();
+      osc2.type = 'sine';
+      osc2.frequency.setValueAtTime(freq * 2, start);
+
+      // Envelope gain node
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0, start);
+      gain.gain.linearRampToValueAtTime(0.22, start + 0.01);  // fast attack
+      gain.gain.exponentialRampToValueAtTime(0.001, start + decay);
+
+      // Harmonic gain node (quieter)
+      const gain2 = ctx.createGain();
+      gain2.gain.setValueAtTime(0, start);
+      gain2.gain.linearRampToValueAtTime(0.06, start + 0.01);
+      gain2.gain.exponentialRampToValueAtTime(0.001, start + decay * 0.7);
+
+      // Master limiter / soft clip via DynamicsCompressor
+      const comp = ctx.createDynamicsCompressor();
+      comp.threshold.value = -18;
+      comp.knee.value = 8;
+      comp.ratio.value = 4;
+      comp.attack.value = 0.002;
+      comp.release.value = 0.25;
+
+      osc.connect(gain);
+      osc2.connect(gain2);
+      gain.connect(comp);
+      gain2.connect(comp);
+      comp.connect(ctx.destination);
+
+      osc.start(start);
+      osc.stop(start + decay + 0.05);
+      osc2.start(start);
+      osc2.stop(start + decay * 0.7 + 0.05);
+    });
+  } catch (e) {
+    // AudioContext unavailable — fail silently
+    console.warn('FocusFlow: chime could not play:', e);
+  }
+}
+
 // ─── Timer Logic ──────────────────────────────────────────────────────────────
 
 function loadPhase(phase) {
@@ -218,8 +334,10 @@ function loadPhase(phase) {
 }
 
 function advancePhase() {
+  playChime(state.phase);
   triggerCompleteFlash();
   const s = getSettings();
+  const phases = getActivePhases();
 
   if (state.inLongBreak) {
     // After long break: reset cycle count, start fresh
@@ -229,10 +347,10 @@ function advancePhase() {
     return;
   }
 
-  const currentPhasesIdx = PHASES.indexOf(state.phase);
+  const currentPhasesIdx = phases.indexOf(state.phase);
 
-  if (currentPhasesIdx === PHASES.length - 1) {
-    // End of a full cycle (recall just finished)
+  if (currentPhasesIdx === phases.length - 1) {
+    // End of a full cycle (last phase just finished)
     state.cycleIndex++;
     state.completedCycles++;
     updateCyclesUI();
@@ -245,13 +363,16 @@ function advancePhase() {
     }
   } else {
     // Move to next phase in current cycle
-    const nextPhase = PHASES[currentPhasesIdx + 1];
+    const nextPhase = phases[currentPhasesIdx + 1];
     setTimeout(() => loadPhase(nextPhase), 200);
   }
 }
 
 function startTimer() {
   if (state.running) return;
+  // Prime the AudioContext on the user gesture that starts the timer,
+  // so it is ready (resumed) when the chime fires later.
+  ensureAudioCtx();
   state.running = true;
   setRunningUI(true);
 
@@ -278,6 +399,26 @@ function resetPhase() {
   pauseTimer();
   loadPhase(state.phase);
   dom.timerSubtext.textContent = 'Ready';
+}
+
+function skipPhase() {
+  pauseTimer();
+  advancePhase();
+}
+
+// ─── Zen Mode ─────────────────────────────────────────────────────────────────
+
+let zenActive = false;
+
+function toggleZen() {
+  zenActive = !zenActive;
+  dom.timerSection.classList.toggle('zen-blur', zenActive);
+  document.body.classList.toggle('zen-active', zenActive);
+  dom.btnZen.classList.toggle('active', zenActive);
+
+  // Swap eye icons
+  dom.zenIconEye.style.display = zenActive ? 'none' : '';
+  dom.zenIconEyeOff.style.display = zenActive ? '' : 'none';
 }
 
 // ─── Settings Tooltip ─────────────────────────────────────────────────────────
@@ -362,6 +503,12 @@ dom.btnStart.addEventListener('click', () => {
 
 // Reset Phase button
 dom.btnReset.addEventListener('click', resetPhase);
+
+// Skip Phase button
+dom.btnSkip.addEventListener('click', skipPhase);
+
+// Zen mode toggle
+dom.btnZen.addEventListener('click', toggleZen);
 
 // ─── MutationObserver fallback for attr() ─────────────────────────────────────
 
